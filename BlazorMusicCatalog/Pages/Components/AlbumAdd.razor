@@ -1,0 +1,19 @@
+﻿@page "/albumAdd"
+
+
+
+<h3>AlbumAdd</h3>
+<button @onclick="AddSong">Add Song</button>
+
+
+@code {
+    public Album album = new Album() { Songs = new List<Song>() };
+
+
+    public void AddSong()
+    {
+        album.Songs.Add(new Song());
+    }
+
+
+}
