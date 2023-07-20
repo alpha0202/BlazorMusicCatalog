@@ -5,9 +5,29 @@
 <h3>AlbumAdd</h3>
 <button @onclick="AddSong">Add Song</button>
 
+@foreach (var cancion in album.Songs)
+{
+    <SongBlock song="cancion"></SongBlock>
+}
+
+
 
 @code {
     public Album album = new Album() { Songs = new List<Song>() };
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            album.Songs.Add(new Song());
+        }
+        catch (Exception)
+        {
+            
+            throw;
+        }
+    }
 
 
     public void AddSong()

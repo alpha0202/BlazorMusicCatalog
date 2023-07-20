@@ -1,0 +1,29 @@
+﻿
+
+<table class="table">
+    <tr>
+         <td><input type="text" @bind="song.Name"/></td>
+    </tr>
+
+    <tr>
+        <td>Upload</td>
+        <td><InputFile ></InputFile></td>
+    </tr>
+    <tr>
+        <td>
+            <button>Update</button>
+        </td>
+    </tr>
+
+</table>
+
+
+@code {
+
+
+    [Parameter]
+    public Song song { get; set; }
+
+
+
+}
