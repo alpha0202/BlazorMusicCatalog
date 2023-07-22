@@ -11,4 +11,8 @@
     <ProjectReference Include="..\BlazorMusicCatalog.Models\BlazorMusicCatalog.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\songs\" />
+  </ItemGroup>
+
 </Project>

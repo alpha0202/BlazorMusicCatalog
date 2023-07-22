@@ -1,18 +1,18 @@
-﻿
+﻿@using System.IO
 
-<table class="table">
+<table class="table table-bordered">
     <tr>
         <td>Name</td>
-         <td><input type="text" @bind="song.Name"/></td>
+         <td><input  type="text" @bind="song.Name"/></td>
     </tr>
-
+    
     <tr>
         <td>Upload</td>
-        <td><InputFile ></InputFile></td>
+        <td><InputFile OnChange="LoadSong"></InputFile></td>
     </tr>
     <tr>
         <td>
-            <button @onclick="@UpdateValueSong">Update</button>
+            <button class="btn btn-outline-secondary" @onclick="@UpdateValueSong">Update</button>
         </td>
     </tr>
 
@@ -33,6 +33,16 @@
         await onSongChanged.InvokeAsync(song);
     }
 
+
+    //upload
+    async Task LoadSong(InputFileChangeEventArgs e)
+    {
+        var folderName = Path.Combine("wwwroot", "songs");
+        var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+        var fullPath = Path.Combine(pathToSave, e.File.Name.Replace(" ", "_"));
+
+        song.Extension = e.File.Name.Substring(e.File.Name.Count() - 3, 3);
+    }
 
 
 }
