@@ -2,6 +2,7 @@
 
 <table class="table">
     <tr>
+        <td>Name</td>
          <td><input type="text" @bind="song.Name"/></td>
     </tr>
 
@@ -11,7 +12,7 @@
     </tr>
     <tr>
         <td>
-            <button>Update</button>
+            <button @onclick="@UpdateValueSong">Update</button>
         </td>
     </tr>
 
@@ -23,6 +24,14 @@
 
     [Parameter]
     public Song song { get; set; }
+
+    [Parameter]
+    public EventCallback<Song> onSongChanged{ get; set; }
+
+    async Task UpdateValueSong()
+    {
+        await onSongChanged.InvokeAsync(song);
+    }
 
 
 

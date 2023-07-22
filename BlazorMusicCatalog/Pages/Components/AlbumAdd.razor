@@ -7,7 +7,7 @@
 
 @foreach (var cancion in album.Songs)
 {
-    <SongBlock song="cancion"></SongBlock>
+    <SongBlock song="cancion" onSongChanged="UpdateAddedSong"></SongBlock>
 }
 
 
@@ -20,11 +20,11 @@
     {
         try
         {
-            album.Songs.Add(new Song());
+            album.Songs.Add(new Song() {Number =  album.Songs.Count +1});
         }
         catch (Exception)
         {
-            
+
             throw;
         }
     }
@@ -32,8 +32,23 @@
 
     public void AddSong()
     {
-        album.Songs.Add(new Song());
+        album.Songs.Add(new Song() {Number = album.Songs.Count + 1});
     }
 
+    public async void UpdateAddedSong(Song song)
+    {
+        var songToUpdate = album.Songs.FirstOrDefault(s => s.Number == song.Number);
+        if (songToUpdate != null)
+        {
+            songToUpdate.Extension = song.Extension;
+            songToUpdate.Name = song.Name;
+            songToUpdate.Path = song.Path;
+        }
+    }
+
+    protected async Task AlbumSave()
+    {
+        var a = album.Songs;
+    }
 
 }
