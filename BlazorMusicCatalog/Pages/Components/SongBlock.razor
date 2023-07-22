@@ -12,7 +12,7 @@
     </tr>
     <tr>
         <td>
-            <button class="btn btn-outline-secondary" @onclick="@UpdateValueSong">Update</button>
+            @*<button class="btn btn-outline-secondary" @onclick="@UpdateValueSong">Update</button>*@
         </td>
     </tr>
 
@@ -28,13 +28,11 @@
     [Parameter]
     public EventCallback<Song> onSongChanged{ get; set; }
 
-    async Task UpdateValueSong()
-    {
-        await onSongChanged.InvokeAsync(song);
-    }
+    //async Task UpdateValueSong()
+    //{
+    //    await onSongChanged.InvokeAsync(song);
+    //}
 
-
-    //upload
     async Task LoadSong(InputFileChangeEventArgs e)
     {
         var folderName = Path.Combine("wwwroot", "songs");
@@ -42,6 +40,15 @@
         var fullPath = Path.Combine(pathToSave, e.File.Name.Replace(" ", "_"));
 
         song.Extension = e.File.Name.Substring(e.File.Name.Count() - 3, 3);
+        song.Path = e.File.Name.Replace(" ", "_");
+
+        using (var ms = new MemoryStream())
+
+        {
+            await e.File.OpenReadStream(Int32.MaxValue).CopyToAsync(ms);
+            await File.WriteAllBytesAsync(fullPath, ms.ToArray());
+        };
+        await onSongChanged.InvokeAsync(song);
     }
 
 
