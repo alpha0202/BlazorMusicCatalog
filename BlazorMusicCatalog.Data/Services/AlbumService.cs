@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BlazorMusicCatalog.Data.Services
 {
-    internal class AlbumService : IAlbumService
+    public class AlbumService : IAlbumService
     {
         private readonly AlbumMusicCatalogContext _context;
         public AlbumService(AlbumMusicCatalogContext context)
@@ -33,9 +33,12 @@ namespace BlazorMusicCatalog.Data.Services
             throw new NotImplementedException();
         }
 
-        public Task<bool> InsertAlbum(Album album)
+        public async Task<bool> InsertAlbum(Album album)
         {
-            throw new NotImplementedException();
+           _context.Add(album);
+
+           return await _context.SaveChangesAsync() > 0;
+
         }
 
         public Task<bool> UpdateAlbum(Album album)

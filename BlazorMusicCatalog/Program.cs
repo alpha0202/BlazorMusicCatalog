@@ -1,4 +1,5 @@
 using BlazorMusicCatalog.Data;
+using BlazorMusicCatalog.Data.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -14,6 +15,7 @@ namespace BlazorMusicCatalog
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
             builder.Services.AddSingleton<WeatherForecastService>();
+            builder.Services.AddScoped<IAlbumService, AlbumService>();
             builder.Services.AddDbContext<AlbumMusicCatalogContext>();
 
 

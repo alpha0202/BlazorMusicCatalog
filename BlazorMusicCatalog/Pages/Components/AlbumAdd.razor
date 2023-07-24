@@ -1,5 +1,7 @@
 ﻿@page "/albumAdd"
+
 @inject NavigationManager navigationManager
+@inject IAlbumService albumService
 
 
 @if (album == null)
@@ -57,7 +59,7 @@ else
 
 
 @code {
-    public Album album = new Album() { Songs = new List<Song>() };
+    public Album album = new Album() { ReleaseDate=DateTime.Now, Songs = new List<Song>() };
 
 
     protected override async Task OnInitializedAsync()
@@ -92,7 +94,7 @@ else
 
     protected async Task AlbumSave()
     {
-        var a = album.Songs;
+        await albumService.InsertAlbum(album);
     }
 
 
