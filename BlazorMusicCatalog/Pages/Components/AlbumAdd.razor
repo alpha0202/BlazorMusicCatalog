@@ -17,6 +17,10 @@ else
                 <td><InputText class="form-control col-sm-5" @bind-Value="album.Title"></InputText></td>
             </tr>
             <tr>
+                <td>Cover</td>
+                <td><InputFile OnChange="LoadAlbumCover"></InputFile></td>
+            </tr>
+            <tr>
                 <td>Description</td>
                 <td><InputText class="form-control col-sm-5" @bind-Value="album.Description"></InputText></td>
             </tr>
@@ -91,6 +95,19 @@ else
             songToUpdate.Path = song.Path;
         }
     }
+
+    async Task LoadAlbumCover(InputFileChangeEventArgs e)
+    {
+        var format = "image/png";
+        var resizedFile = await e.File.RequestImageFileAsync(format, 200, 200);
+        var buffer = new byte[resizedFile.Size];
+
+        await resizedFile.OpenReadStream().ReadAsync(buffer);
+        album.CoverImage = buffer;
+    }
+
+
+
 
     protected async Task AlbumSave()
     {
