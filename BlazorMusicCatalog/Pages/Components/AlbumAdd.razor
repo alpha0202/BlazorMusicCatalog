@@ -1,4 +1,5 @@
 ﻿@page "/albumAdd"
+@page "/albumAdd/{id:int}"
 
 @inject NavigationManager navigationManager
 @inject IAlbumService albumService
@@ -10,47 +11,61 @@
 }
 else
 {
-    <EditForm Model="@album">
-        <table class="table table-bordered">
-            <tr>
-                <td>Title</td>
-                <td><InputText class="form-control col-sm-5" @bind-Value="album.Title"></InputText></td>
-            </tr>
-            <tr>
-                <td>Cover</td>
-                <td><InputFile OnChange="LoadAlbumCover"></InputFile></td>
-            </tr>
-            <tr>
-                <td>Description</td>
-                <td><InputText class="form-control col-sm-5" @bind-Value="album.Description"></InputText></td>
-            </tr>
-            <tr>
-                <td>Release Date</td>
-                <td><InputDate class="form-control col-sm-5" @bind-Value="album.ReleaseDate"></InputDate></td>
-            </tr>
-            <tr>
-                <td>Author</td>
-                <td><InputText class="form-control col-sm-5" @bind-Value="album.Author"></InputText></td>
-            </tr>
-        </table>
+    <div class="container">
+        <div class="card m-6 border-0">
 
-        <h3>Songs <button class="btn btn-success" @onclick="AddSong">+</button> </h3>
-       
-        @foreach (var cancion in album.Songs)
-        {
-            <SongBlock song="cancion" onSongChanged="UpdateAddedSong"></SongBlock>
-        }
-        <table>
-            <tbody>
-                <tr>
-                    <td colspan="2" style="text-align:center">
-                        <input type="submit" value="Save" @onclick="AlbumSave" />
-                        <input type="button" value="Cancel" @onclick="Cancel"/>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </EditForm>
+            <EditForm Model="@album">
+                <table class="table table-bordered">
+                    <tr>
+                        <td>Title</td>
+                        <td><InputText class="form-control col-sm-5" @bind-Value="album.Title"></InputText></td>
+                    </tr>
+                    <tr>
+                        <td>Cover</td>
+                        <td><InputFile OnChange="LoadAlbumCover"></InputFile></td>
+                    </tr>
+                    <tr>
+                        <td>Description</td>
+                        <td><InputText class="form-control col-sm-5" @bind-Value="album.Description"></InputText></td>
+                    </tr>
+                    <tr>
+                        <td>Release Date</td>
+                        <td><InputDate class="form-control col-sm-5" @bind-Value="album.ReleaseDate"></InputDate></td>
+                    </tr>
+                    <tr>
+                        <td>Author</td>
+                        <td><InputText class="form-control col-sm-5" @bind-Value="album.Author"></InputText></td>
+                    </tr>
+                </table>
+
+                <h3>Songs <button class="btn btn-success" @onclick="AddSong">+</button> </h3>
+
+                @foreach (var cancion in album.Songs)
+                {
+                    <SongBlock song="cancion" onSongChanged="UpdateAddedSong" onSongRemoved="RemoveSong"></SongBlock>
+
+                }
+                <table>
+                    <tbody>
+                        <tr>
+                            <td colspan="2" style="text-align:center">
+                                <input type="submit" class="btn btn-success" value="Save" @onclick="AlbumSave" />
+                            </td>
+                            <td style="text-align:center">
+                                <input type="button" class="btn btn-secondary" value="Cancel" @onclick="Cancel" />
+
+                            </td>
+                            @if (id > 0)
+                        {
+                                <td style="text-align:center"><input type="button" class="btn btn-danger" value="Delete" @onclick="DeleteAlbum"> </td>
+                            }
+                        </tr>
+                    </tbody>
+                </table>
+            </EditForm>
+        </div>
+
+    </div>
 
 
     //<button @onclick="AddSong">Add Song</button>
@@ -63,14 +78,33 @@ else
 
 
 @code {
-    public Album album = new Album() { ReleaseDate=DateTime.Now, Songs = new List<Song>() };
+
+    [Parameter]
+    public int id { get; set; }
+
+    public Album album;
 
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            album.Songs.Add(new Song() { Number = album.Songs.Count + 1 });
+            if (id > 0)
+            {
+                album = await albumService.GetAlbumDetails(id);
+            }
+            else
+            {
+                album = new Album()
+                    {
+                        ReleaseDate = DateTime.Now,
+                        Songs = new List<Song>()
+                    };
+
+                album.Songs.Add(new Song() { Number = album.Songs.Count + 1 });
+            }
+
+
         }
         catch (Exception)
         {
@@ -96,6 +130,22 @@ else
         }
     }
 
+    protected async Task DeleteAlbum()
+    {
+        await albumService.DeleteAlbum(album);
+        NavigateHome();
+    }
+
+
+    public void RemoveSong(Song song)
+    {
+        var songToRemove = album.Songs.FirstOrDefault(s => s.Number == song.Number);
+        album.Songs.Remove(songToRemove);
+
+    }
+
+
+
     async Task LoadAlbumCover(InputFileChangeEventArgs e)
     {
         var format = "image/png";
@@ -111,7 +161,19 @@ else
 
     protected async Task AlbumSave()
     {
-        await albumService.InsertAlbum(album);
+        if (id > 0)
+        {
+            await albumService.UpdateAlbum(album);
+        }
+        else
+        {
+            await albumService.InsertAlbum(album);
+            NavigateHome();
+        }
+
+
+
+       
     }
 
 

@@ -9,13 +9,9 @@
     <tr>
         <td>Upload</td>
         <td><InputFile OnChange="LoadSong"></InputFile></td>
+        <td><input class="btn btn-primary" type="button" @onclick=@RemoveSong value="Remove"></input></td>
     </tr>
-    <tr>
-        <td>
-            @*<button class="btn btn-outline-secondary" @onclick="@UpdateValueSong">Update</button>*@
-        </td>
-    </tr>
-
+   
 </table>
 
 
@@ -27,6 +23,11 @@
 
     [Parameter]
     public EventCallback<Song> onSongChanged{ get; set; }
+
+
+    [Parameter]
+    public EventCallback<Song> onSongRemoved { get; set; }
+
 
     //async Task UpdateValueSong()
     //{
@@ -50,6 +51,12 @@
         };
         await onSongChanged.InvokeAsync(song);
     }
+
+    async Task RemoveSong()
+    {
+        await onSongRemoved.InvokeAsync(song);
+    }
+
 
 
 }

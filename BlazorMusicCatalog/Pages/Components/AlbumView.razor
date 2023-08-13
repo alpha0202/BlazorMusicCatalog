@@ -3,7 +3,7 @@
 
 
 
-@if(album != null)
+@if(album != null && album.Songs !=null)
 {
     <div class="container">
         <div class="row offset-1">
@@ -12,12 +12,33 @@
             </div>
             <div class="col-md-4">
                 <div>
+                    <img src="data:image/png;base64,@(Convert.ToBase64String(album.CoverImage))">
                     <h1 class="text-muted">@album.Title</h1>
                 </div>
             </div>
             <div class="col-md-4">
             </div>
         </div>
+        <br />
+        @foreach (var song in album.Songs)
+        {
+            <div class="card m-3 p-0 border-0">
+                <div class="card-body mx-0 px-0">
+                    <div class="row flow-offset-1">
+                        <div class="col-md-4">
+                            <span>@song.Name</span>
+
+                        </div>
+                        <div class="col-md-4">
+                            <audio controls="controls" id="@song.Id" src="/songs/@(song.Path)"></audio>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        }
 
     </div>
 
@@ -40,7 +61,7 @@ else
     public int Id { get; set; }
 
 
-    Album album = new Album();
+    Album album;
 
     protected override async Task OnInitializedAsync()
     {
